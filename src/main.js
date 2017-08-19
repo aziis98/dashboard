@@ -1,14 +1,6 @@
-import Vue from 'vue'
 
-import App from './App.vue'
-import Widget from './Widget.vue'
+// dashboard
+// Copyright 2017 Antonio De Lucreziis
 
-new Vue({
-    el: '#app',
+console.log('Hello World!');
 
-    data: {
-        
-    },
-
-    render: h => h(App),
-});
