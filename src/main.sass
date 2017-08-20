@@ -1,8 +1,199 @@
+
+$font-family: 'Open Sans'
+
+$main-color: #333
+$text-color: #DDD
+$tint-color: darken(#f80, 5%)
+
 body, html
     margin: 0
     padding: 0
     width: 100%
     height: 100%
+    overflow: hidden
 
 body
-    background-color: #888
+    background-color: $main-color
+    color: $text-color
+    font-family: $font-family, sans-serif
+    font-weight: lighter
+    font-size: 16px
+
+::-webkit-scrollbar
+    width: 5px
+
+::-webkit-scrollbar-track
+    background-color: transparentize(#000000, 0.85)
+    border-radius: 2.5px
+
+::-webkit-scrollbar-thumb
+    background-color: transparentize(#000000, 0.85)
+
+#app
+    position: relative
+    width: 100%
+    height: 100%
+
+    background: url(/assets/tile.png) center center repeat
+    user-select: none
+
+    .toolbar
+        height: 0
+        display: flex
+        flex-direction: row
+        position: absolute
+        top: 51px
+        left: -1px
+
+        background-color: darken($main-color, 2%)
+        border: 1px solid darken($main-color, 4%)
+        border-top: none
+
+        transition: height 150ms ease-in-out
+        opacity: 0
+
+    .tool
+        height: 0px
+        padding: 0px 20px
+        display: flex
+        align-items: center
+        justify-content: center
+        position: relative
+        cursor: pointer
+        transition: height 150ms ease-in-out, opacity 150ms cubic-bezier(0.95, 0.01, 1, 1)
+        opacity: 0
+
+        &:hover > .label
+            color: $tint-color
+
+        .label
+            width: 100px
+            text-align: center
+        
+        &:not(:first-child)
+            border-left: 1px solid darken($main-color, 4%)
+
+        &:not(.empty):hover 
+            padding-right: 0
+
+            & > .label
+                padding-right: 20px
+
+            & > .toolbar
+                height: 50px
+                opacity: 1
+                & > .tool
+                    height: 51px
+                    opacity: 1
+
+    .root-toolbar
+        height: 50px
+        opacity: 1
+        top: 0
+        left: 0
+        right: 0
+        z-index: 100
+        border-left: none
+        border-right: none
+
+        & > .tool
+            height: 51px
+            opacity: 1
+            &:last-child
+                border-right: 1px solid darken($main-color, 4%)
+
+
+    .widget
+        position: absolute
+        border: 1px solid $main-color
+        border-radius: 4px
+        background-color: mix($main-color, #fff, 95%)
+        // background-color: transparentize(mix($main-color, #fff, 95%), 0.75)
+        padding: 20px
+
+        user-select: none
+
+        .note
+
+            width: 60vw
+            max-width: 450px
+
+            .title
+                font-size: 18px
+                font-weight: normal
+
+            textarea
+                margin: 0 5px
+
+                background-color: transparent
+                color: $text-color
+
+                font-size: 16px
+                font-family: $font-family, sans-serif
+                font-weight: lighter
+
+                resize: none
+                outline: none
+                border: none
+
+                max-height: 450px
+                word-wrap: normal
+                overflow-x: hidden
+                overflow-y: auto
+    
+    .logo
+        font-size: 20px
+        width: 125px
+
+.center
+    text-align: center
+
+
+.options
+    height: 40px
+    display: flex
+    align-items: center
+    border-top: 1px solid $main-color
+    border-bottom: 1px solid $main-color
+    margin: 5px 0
+
+    .btn-group
+        height: 25px
+        display: flex
+        align-items: center
+        margin: 0 5px
+
+        button
+            height: 25px
+            width: 30px
+            
+            &:hover
+                color: $tint-color
+
+            &:first-child
+                border-top-right-radius: 0
+                border-bottom-right-radius: 0
+            &:last-child
+                border-top-left-radius: 0
+                border-bottom-left-radius: 0
+            &:not(:first-child):not(:last-child)
+                border-left: none
+                border-right: none
+                border-radius: 0
+
+
+button
+    outline: none
+    border: none
+    text-align: center
+    
+    background-color: darken($main-color, 2%)
+    border: 1px solid darken($main-color, 4%)
+    color: $text-color
+
+    border-radius: 2px
+    margin: 0
+
+    cursor: pointer
+    &:hover
+        color: $tint-color
