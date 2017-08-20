@@ -2,7 +2,7 @@
 // dashboard
 // Copyright 2017 Antonio De Lucreziis
 
-import ww from './widgets';
+import ww from './util/widgets';
 
 import { Note } from './components/widget-types/note'
 import { Dynamic } from './components/widget-types/dynamic'

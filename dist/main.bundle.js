@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-module.exports = __webpack_require__(2);
+module.exports = __webpack_require__(7);
 
 
 /***/ }),
@@ -78,17 +78,17 @@ module.exports = __webpack_require__(2);
 "use strict";
 
 
-var _widgets = __webpack_require__(4);
+var _widgets = __webpack_require__(2);
 
 var _widgets2 = _interopRequireDefault(_widgets);
 
-var _note = __webpack_require__(7);
+var _note = __webpack_require__(3);
 
-var _dynamic = __webpack_require__(8);
+var _dynamic = __webpack_require__(4);
 
-var _widget = __webpack_require__(6);
+var _widget = __webpack_require__(5);
 
-var _toolbar = __webpack_require__(5);
+var _toolbar = __webpack_require__(6);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -209,13 +209,6 @@ window.app = app;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 3 */,
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -274,28 +267,86 @@ exports.default = {
 };
 
 /***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Vue.component('toolbar', {
-    template: '#toolbar-template'
-});
-
-Vue.component('tool', {
-    template: '#tool-template',
-    props: ['name'],
+Vue.component('note', {
+    template: '#widget-note-template',
+    props: {
+        input: Object,
+        focused: Boolean
+    },
     computed: {
-        isEmpty: function isEmpty() {
-            return !this.$slots.default;
+        lines: function lines() {
+            return this.input.note.split('\n');
         }
     }
 });
 
 /***/ }),
-/* 6 */
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Vue.component('dynamic', {
+    template: '#widget-dynamic-template',
+    props: {
+        input: Object,
+        focused: Boolean
+    },
+    computed: {
+        rendered: function rendered() {
+            try {
+                return eval(this.input.script);
+            } catch (error) {
+                return error;
+            }
+        }
+    },
+    data: function data() {
+        return {
+            timer: null
+        };
+    },
+
+    watch: {
+        'input.updateIntervalSeconds': function inputUpdateIntervalSeconds() {
+            this.teardownTimer();
+            this.setupTimer();
+        }
+    },
+
+    mounted: function mounted() {
+        this.setupTimer();
+    },
+
+    beforeDestroy: function beforeDestroy() {
+        this.teardownTimer();
+    },
+
+    methods: {
+        setupTimer: function setupTimer() {
+            var _this = this;
+
+            this.timer = setInterval(function () {
+                var s = _this.input.script;
+                _this.input.script = '';
+                _this.input.script = s;
+            }, this.input.updateIntervalSeconds * 1000);
+        },
+        teardownTimer: function teardownTimer() {
+            clearInterval(this.timer);
+        }
+    }
+});
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -354,83 +405,31 @@ Vue.component('widget', {
 });
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Vue.component('note', {
-    template: '#widget-note-template',
-    props: {
-        input: Object,
-        focused: Boolean
-    },
+Vue.component('toolbar', {
+    template: '#toolbar-template'
+});
+
+Vue.component('tool', {
+    template: '#tool-template',
+    props: ['name'],
     computed: {
-        lines: function lines() {
-            return this.input.note.split('\n');
+        isEmpty: function isEmpty() {
+            return !this.$slots.default;
         }
     }
 });
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 7 */
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Vue.component('dynamic', {
-    template: '#widget-dynamic-template',
-    props: {
-        input: Object,
-        focused: Boolean
-    },
-    computed: {
-        rendered: function rendered() {
-            try {
-                return eval(this.input.script);
-            } catch (error) {
-                return error;
-            }
-        }
-    },
-    data: function data() {
-        return {
-            timer: null
-        };
-    },
-
-    watch: {
-        'input.updateIntervalSeconds': function inputUpdateIntervalSeconds() {
-            this.teardownTimer();
-            this.setupTimer();
-        }
-    },
-
-    mounted: function mounted() {
-        this.setupTimer();
-    },
-
-    beforeDestroy: function beforeDestroy() {
-        this.teardownTimer();
-    },
-
-    methods: {
-        setupTimer: function setupTimer() {
-            var _this = this;
-
-            this.timer = setInterval(function () {
-                var s = _this.input.script;
-                _this.input.script = '';
-                _this.input.script = s;
-            }, this.input.updateIntervalSeconds * 1000);
-        },
-        teardownTimer: function teardownTimer() {
-            clearInterval(this.timer);
-        }
-    }
-});
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

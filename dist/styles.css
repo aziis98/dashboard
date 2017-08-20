@@ -26,7 +26,7 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  background: url(/assets/tile.png) center center repeat;
+  background: url(./assets/tile.png) center center repeat;
   user-select: none; }
   #app .toolbar {
     height: 0;

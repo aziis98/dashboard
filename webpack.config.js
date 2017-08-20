@@ -34,7 +34,7 @@ const config = {
                 test: /\.sass$/,
                 use: ExtractTextPlugin.extract({
                     // fallbackLoader: 'style-loader',
-                    use: 'css-loader!sass-loader'
+                    use: 'css-loader?url=false!sass-loader'
                 }),
             }
         ]
