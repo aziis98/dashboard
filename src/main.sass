@@ -74,10 +74,8 @@ body
             border-left: 1px solid darken($main-color, 4%)
 
         &:not(.empty):hover 
-            padding-right: 0
-
             & > .label
-                padding-right: 20px
+                // padding-right: 20px
 
             & > .toolbar
                 height: 50px
@@ -113,6 +111,23 @@ body
 
         user-select: none
 
+        .dynamic
+            width: 60vw
+            max-width: 450px
+
+            .options
+                .interval
+                    width: 50px
+                .group
+                    flex-grow: 1
+                    input[type=text]
+                        width: 100%
+                        font-size: 14px
+                        font-family: 'PT Mono', monospace !important
+
+            .computed
+                text-align: center
+
         .note
 
             width: 60vw
@@ -124,6 +139,7 @@ body
 
             textarea
                 margin: 0 5px
+                width: 100%
 
                 background-color: transparent
                 color: $text-color
@@ -137,7 +153,7 @@ body
                 border: none
 
                 max-height: 450px
-                word-wrap: normal
+                word-wrap: break-word
                 overflow-x: hidden
                 overflow-y: auto
     
@@ -151,49 +167,65 @@ body
 
 .options
     height: 40px
+
     display: flex
-    align-items: center
     border-top: 1px solid $main-color
     border-bottom: 1px solid $main-color
-    margin: 5px 0
+    
+    margin: 5px
 
-    .btn-group
-        height: 25px
-        display: flex
-        align-items: center
+    align-items: center
+    justify-content: space-between
+
+    & > *
         margin: 0 5px
 
-        button
-            height: 25px
-            width: 30px
-            
-            &:hover
-                color: $tint-color
+    button
+        min-width: 25px
 
-            &:first-child
-                border-top-right-radius: 0
-                border-bottom-right-radius: 0
-            &:last-child
-                border-top-left-radius: 0
-                border-bottom-left-radius: 0
-            &:not(:first-child):not(:last-child)
-                border-left: none
-                border-right: none
-                border-radius: 0
+.group
+    display: flex
+    align-items: center
 
+    button, input[type=text]
+        &:first-child
+            border-top-right-radius: 0
+            border-bottom-right-radius: 0
+        &:last-child
+            border-top-left-radius: 0
+            border-bottom-left-radius: 0
+        &:not(:first-child):not(:last-child)
+            border-left: none
+            border-right: none
+            border-radius: 0
 
-button
+    button
+        &:hover
+            color: $tint-color
+
+button, input[type=text]
+    height: 25px
     outline: none
     border: none
-    text-align: center
-    
+
     background-color: darken($main-color, 2%)
     border: 1px solid darken($main-color, 4%)
     color: $text-color
 
     border-radius: 2px
-    margin: 0
+
+input[type=text]
+    padding: 0 6px
+    
+    font-size: 15px
+    font-family: $font-family, sans-serif 
+
+button
+    text-align: center
 
     cursor: pointer
     &:hover
         color: $tint-color
+
+*
+    box-sizing: border-box

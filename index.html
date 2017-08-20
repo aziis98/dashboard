@@ -8,7 +8,10 @@
         <link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/wAAF/6AABv9gAAd+4AAHveAAB9vgAAfn4AAH5+AAB9vgAAe94AAHfuAABv9gAAX/oAAD/8AAAAAAAA" rel="icon" type="image/x-icon" />
 
         <script src="https://use.fontawesome.com/e3c537e348.js"></script>
+        
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+
         <link rel="stylesheet" href="/dist/styles.css">
 
         <script src="https://unpkg.com/vue"></script>
@@ -19,33 +22,51 @@
             <div class="note">
 
                 <div v-if="input.focused" class="options">
-                    <div class="btn-group">
-                        <button><i class="fa fa-align-left" aria-hidden="true"></i></button>
-                        <button><i class="fa fa-align-center" aria-hidden="true"></i></button>
-                        <button><i class="fa fa-align-right" aria-hidden="true"></i></button>
+                    <div class="group">
+                        <button @click="input.align = 'left'"><i class="fa fa-align-left" aria-hidden="true"></i></button>
+                        <button @click="input.align = 'center'"><i class="fa fa-align-center" aria-hidden="true"></i></button>
+                        <button @click="input.align = 'right'"><i class="fa fa-align-right" aria-hidden="true"></i></button>
                     </div>
+                    
+                    <button @click="$emit('removed')"><i class="fa fa-trash" aria-hidden="true"></i></button>
                 </div>
 
                 <div class="title" 
                     :style="{ textAlign: input.align }" 
                     v-if="lines.length > 10">{{lines[0]}}</div>
 
-                <textarea class="note"
-                        :style="{ textAlign: input.align }"
+                <textarea :style="{ textAlign: input.align }"
                         v-model="input.note"
-                        :rows="lines.length"></textarea>
+                        :rows="Math.floor(0.5 * (input.note.length / 50 + lines.length))"></textarea>
             </div>
         </script>
 
-        <script type="text/x-template" id="widget-custom-template">
+        <script type="text/x-template" id="widget-dynamic-template">
+            <div class="dynamic">
 
+                <div v-if="input.focused" class="options">
+                    <input class="interval" type="text" v-model="input.updateIntervalSeconds">
+
+                    <div class="group">
+                        <input type="text" v-model="input.script">
+                        <button class="question"><i class="fa fa-question" aria-hidden="true"></i></button>
+                    </div>
+
+                    <button @click="$emit('removed')"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                </div>
+
+                <div class="computed">
+                    <h2>{{rendered}}</h2>
+                </div>
+
+            </div>
         </script>
         
         <script type="text/x-template" id="widget-template">
             <div class="widget" :style="{ left: snap(input.location.x) + pan.x + 'px', top: snap(input.location.y) + pan.y + 'px' }"
                     @mousedown="onDragStart"
                     @mouseup="onDragEnd">
-                <component :is="input.type" :input="input"></component>
+                <component :is="input.type" :input="input" @removed="$emit('removed')"></component>
             </div>
         </script>
 
@@ -80,10 +101,9 @@
                 <tool name="New Widget">
                     <toolbar>
                         <tool name="Note"
-                                @click.native="addWidget('note', { align: 'left' })"
-                                />
-                        <tool/>
-                        <tool/>
+                                @click.native="addWidget('note', { align: 'left' })"></tool>
+                        <tool name="Dynamic"
+                                @click.native="addWidget('dynamic', { })"></tool>
                     </toolbar>
                 </tool>
                 <tool name="View">
@@ -103,7 +123,8 @@
                 :mouse="mouse"
                 :pan="pan"
                 @updated="save"
-                @click.native="onWidgetSelected(uid)"></widget>
+                @click.native="onWidgetSelected(uid)"
+                @removed="onWidgetRemoved(uid)"></widget>
         </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>

@@ -5,16 +5,18 @@ function generateUID() {
 
 const factories = {
     
-    'note': ({align}) => ({
-        note: "I'm a note!",
-        align,
+    'note': ({
+        note = "I'm a note!",
+        align = 'left',
+    }) => ({
+        note, align,
     }),
 
-    'dynamic': () => ({
-        script: '',
-        result: '',
-
-        updateEvery: 1,
+    'dynamic': ({
+        script = "'I\\'m a new Dynamic! See: ' + Math.floor(Math.random() * 10)",
+        updateIntervalSeconds = 0.1, 
+    }) => ({
+        script, updateIntervalSeconds,
     }),
 
 };
@@ -29,6 +31,7 @@ function createWidget(pan, type, opts) {
             y: -pan.y + innerHeight * 0.5,
         },
         type,
+        focused: false,
 
     }, factories[type](opts));
 }

@@ -4,80 +4,17 @@
 
 import ww from './widgets';
 
-Vue.component('note', {
-    template: '#widget-note-template',
-    props: {
-        input: Object,
-        focused: Boolean,
-    },
-    computed: {
-        lines: function () {
-            return this.input.note.split('\n');
-        },
-    },
-})
+import { Note } from './components/widget-types/note'
+import { Dynamic } from './components/widget-types/dynamic'
 
-Vue.component('widget', {
-    template: '#widget-template',
-
-    props: {
-        input: {
-            type: Object,
-            /*
-
-            - uid
-            - location
-            - type
-
-            */
-        },
-        mouse: Object,
-        pan: Object,
-    },
-
-    data: function () {
-        return {
-            lastMouseEvent: null,
-            dragging: false,
-        };
-    },
-
-    updated: function () {
-        this.$emit('updated');
-    },
-
-    methods: {
-        snap: function (value) {
-            return Math.floor(value / 5) * 5;
-        },
-
-        onDragStart: function () {
-            this.dragging = true;
-        },
-        onDragEnd: function () {
-            this.dragging = false;
-        },
-    },
-
-    watch: {
-        mouse: function (mouse) {
-            if (this.dragging) {
-                this.input.location = {
-                    x: this.input.location.x + mouse.dx,
-                    y: this.input.location.y + mouse.dy,
-                };
-            }
-        }
-    }
-});
-
+import { Widget } from './components/widget'
 import { Toolbar, Tool } from './components/toolbar'
 
 const app = new Vue({
     el: '#app',
     data: {
 
-        widgets: { },
+        widgets: {},
 
         pan: { x: innerWidth * 0.5, y: innerHeight * 0.5 },
 
@@ -92,23 +29,19 @@ const app = new Vue({
             localStorage.setItem('dashboard', 'true');
         }
         else {
-            // load
-            const { widgets, pan } = JSON.parse(localStorage.getItem('dashboard-store'));
-
-            this.widgets = widgets;
-            this.pan = pan;
+            this.load();
         }
     },
 
     methods: {
 
-        onPanStart: function(e) {
+        onPanStart: function (e) {
             if (e.target === this.$el) {
                 this.panning = true;
             }
         },
 
-        onMouseMove: function(e) {
+        onMouseMove: function (e) {
             if (this.lastMouseEvent) {
                 this.mouse = {
                     dx: e.clientX - this.lastMouseEvent.clientX,
@@ -126,7 +59,7 @@ const app = new Vue({
             this.lastMouseEvent = e;
         },
 
-        onPanEnd: function(e) {
+        onPanEnd: function (e) {
             this.panning = false;
             this.save();
 
@@ -135,6 +68,17 @@ const app = new Vue({
                     this.widgets[uid].focused = false;
                 });
             }
+        },
+
+        load: function () {
+            const { widgets, pan } = JSON.parse(localStorage.getItem('dashboard-store'));
+
+            this.widgets = widgets;
+            this.pan = pan;
+
+            Object.keys(this.widgets).forEach(uid => {
+                this.widgets[uid].focused = false;
+            })
         },
 
         save: function () {
@@ -146,7 +90,7 @@ const app = new Vue({
 
         addWidget: function (type, opts) {
             const widget = ww.createWidget(this.pan, type, opts);
-            
+
             this.widgets = Object.assign({}, this.widgets, {
                 [widget.uid]: widget
             });
@@ -154,7 +98,13 @@ const app = new Vue({
             this.$forceUpdate();
         },
 
+        onWidgetRemoved: function (uid) {
+            Vue.delete(this.widgets, uid);
+        },
+
         onWidgetSelected: function (uid) {
+            if (!this.widgets[uid]) return;
+
             Object.keys(this.widgets).forEach(uid => {
                 this.widgets[uid].focused = false;
             });
