@@ -17,56 +17,12 @@
         <script src="https://unpkg.com/vue"></script>
     </head>
     <body>
-        
-        <script type="text/x-template" id="widget-note-template">
-            <div class="note">
 
-                <div v-if="input.focused" class="options">
-                    <div class="group">
-                        <button @click="input.align = 'left'"><i class="fa fa-align-left" aria-hidden="true"></i></button>
-                        <button @click="input.align = 'center'"><i class="fa fa-align-center" aria-hidden="true"></i></button>
-                        <button @click="input.align = 'right'"><i class="fa fa-align-right" aria-hidden="true"></i></button>
-                    </div>
-                    
-                    <button @click="$emit('removed')"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                </div>
-
-                <div class="title" 
-                    :style="{ textAlign: input.align }" 
-                    v-if="lines.length > 10">{{lines[0]}}</div>
-
-                <textarea :style="{ textAlign: input.align }"
-                        v-model="input.note"
-                        :rows="Math.floor(0.5 * (input.note.length / 50 + lines.length))"></textarea>
-            </div>
-        </script>
-
-        <script type="text/x-template" id="widget-dynamic-template">
-            <div class="dynamic">
-
-                <div v-if="input.focused" class="options">
-                    <input class="interval" type="text" v-model="input.updateIntervalSeconds">
-
-                    <div class="group">
-                        <input type="text" v-model="input.script">
-                        <button class="question"><i class="fa fa-question" aria-hidden="true"></i></button>
-                    </div>
-
-                    <button @click="$emit('removed')"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                </div>
-
-                <div class="computed">
-                    <h2>{{rendered}}</h2>
-                </div>
-
-            </div>
-        </script>
-        
         <script type="text/x-template" id="widget-template">
             <div class="widget" :style="{ left: snap(input.location.x) + pan.x + 'px', top: snap(input.location.y) + pan.y + 'px' }"
                     @mousedown="onDragStart"
                     @mouseup="onDragEnd">
-                <component :is="input.type" :input="input" @removed="$emit('removed')"></component>
+                <component :is="input.type" :input="input" @removed="$emit('removed')" @updated="$emit('updated')"></component>
             </div>
         </script>
 
@@ -109,7 +65,11 @@
                 <tool name="View">
                     <toolbar>
                         <tool></tool>
-                        <tool></tool>
+                        <tool name="View 1">
+                            <toolbar>
+                                <tool name="Destroy"></tool>
+                            </toolbar>
+                        </tool>
                         <tool></tool>
                         <tool></tool>
                     </toolbar>
@@ -122,13 +82,28 @@
                 :input="widget"
                 :mouse="mouse"
                 :pan="pan"
-                @updated="save"
-                @click.native="onWidgetSelected(uid)"
+                @updated="save()"
+                @dblclick.native="onWidgetSelected(uid)"
                 @removed="onWidgetRemoved(uid)"></widget>
         </div>
 
+        <div 
+            id="tooltip"
+            :class="position"
+            :style="{ left: x + 'px', top: y + 'px'}"
+            v-show="isShown"
+            @mouseleave="hide()"
+            >
+            <div class="message" v-if="message.html" v-html="message.html"></div>
+            <div class="message" v-else>{{message}}</div>
+        </div>
+
+        <!-- Libraries for the user -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/it.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/ramda/0.24.1/ramda.min.js"></script>
+        <!-- for now only moment and ramda -->
+
         <script src="./dist/main.bundle.js"></script>
+
     </body>
 </html>

@@ -3,12 +3,16 @@
 // Copyright 2017 Antonio De Lucreziis
 
 import ww from './util/widgets';
+ 
+import { ButtonRemove } from './components/button-remove'
 
 import { Note } from './components/widget-types/note'
 import { Dynamic } from './components/widget-types/dynamic'
 
 import { Widget } from './components/widget'
 import { Toolbar, Tool } from './components/toolbar'
+
+import { Tooltip } from './components/tooltip'
 
 const app = new Vue({
     el: '#app',
@@ -82,6 +86,10 @@ const app = new Vue({
         },
 
         save: function () {
+
+            if (this.panning) return;
+            console.log('Saving state!');
+
             localStorage.setItem('dashboard-store', JSON.stringify({
                 widgets: this.widgets,
                 pan: this.pan,
@@ -100,6 +108,7 @@ const app = new Vue({
 
         onWidgetRemoved: function (uid) {
             Vue.delete(this.widgets, uid);
+            this.save();
         },
 
         onWidgetSelected: function (uid) {

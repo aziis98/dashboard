@@ -1,0 +1,35 @@
+<div class="dynamic">
+
+    <div v-if="input.focused" class="options">
+        <input class="interval" type="text" v-model="input.updateIntervalSeconds" title="The update interval in seconds">
+
+        <div class="group">
+            <input type="text" v-model="input.script" title="The script to execute">
+            <button 
+                class="question"
+                @mouseenter="showTooltip($event.target)"
+                @mouseleave="Tooltip.hide()"
+                ><i class="fa fa-question" aria-hidden="true"></i></button>
+        </div>
+
+        <button-remove @click="$emit('removed')"></button-remove>
+    </div>
+
+    <div class="computed">
+        <div class="inputs">
+            <input
+                type="text"
+                v-for="fnInput in input.fnInputs" 
+                v-model="fnInput.value" 
+                :placeholder="fnInput.name"
+                :title="fnInput.name"
+                
+                @mouseenter="Tooltip.show($event.target, fnInput.name)"
+                @mouseleave="Tooltip.hide()"
+                >
+        </div>
+
+        <div class="result">{{result}}</div>
+    </div>
+
+</div>

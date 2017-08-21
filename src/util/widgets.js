@@ -8,6 +8,7 @@ const factories = {
     'note': ({
         note = "I'm a note!",
         align = 'left',
+        monospaced = false,
     }) => ({
         note, align,
     }),
@@ -16,7 +17,11 @@ const factories = {
         script = "'I\\'m a new Dynamic! See: ' + Math.floor(Math.random() * 10)",
         updateIntervalSeconds = 0.1, 
     }) => ({
-        script, updateIntervalSeconds,
+        script, 
+        updateIntervalSeconds,
+        fnInputs: [/*
+            { name, value }
+        */],
     }),
 
 };
@@ -32,6 +37,7 @@ function createWidget(pan, type, opts) {
         },
         type,
         focused: false,
+        far: false,
 
     }, factories[type](opts));
 }

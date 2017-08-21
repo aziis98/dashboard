@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-module.exports = __webpack_require__(7);
+module.exports = __webpack_require__(13);
 
 
 /***/ }),
@@ -82,13 +82,17 @@ var _widgets = __webpack_require__(2);
 
 var _widgets2 = _interopRequireDefault(_widgets);
 
-var _note = __webpack_require__(3);
+var _buttonRemove = __webpack_require__(3);
 
-var _dynamic = __webpack_require__(4);
+var _note = __webpack_require__(5);
 
-var _widget = __webpack_require__(5);
+var _dynamic = __webpack_require__(7);
 
-var _toolbar = __webpack_require__(6);
+var _widget = __webpack_require__(10);
+
+var _toolbar = __webpack_require__(11);
+
+var _tooltip = __webpack_require__(12);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -173,6 +177,10 @@ var app = new Vue({
         },
 
         save: function save() {
+
+            if (this.panning) return;
+            console.log('Saving state!');
+
             localStorage.setItem('dashboard-store', JSON.stringify({
                 widgets: this.widgets,
                 pan: this.pan
@@ -189,6 +197,7 @@ var app = new Vue({
 
         onWidgetRemoved: function onWidgetRemoved(uid) {
             Vue.delete(this.widgets, uid);
+            this.save();
         },
 
         onWidgetSelected: function onWidgetSelected(uid) {
@@ -228,7 +237,9 @@ var factories = {
         var _ref$note = _ref.note,
             _note = _ref$note === undefined ? "I'm a note!" : _ref$note,
             _ref$align = _ref.align,
-            align = _ref$align === undefined ? 'left' : _ref$align;
+            align = _ref$align === undefined ? 'left' : _ref$align,
+            _ref$monospaced = _ref.monospaced,
+            monospaced = _ref$monospaced === undefined ? false : _ref$monospaced;
 
         return {
             note: _note, align: align
@@ -241,7 +252,11 @@ var factories = {
             _ref2$updateIntervalS = _ref2.updateIntervalSeconds,
             updateIntervalSeconds = _ref2$updateIntervalS === undefined ? 0.1 : _ref2$updateIntervalS;
         return {
-            script: script, updateIntervalSeconds: updateIntervalSeconds
+            script: script,
+            updateIntervalSeconds: updateIntervalSeconds,
+            fnInputs: [/*
+                       { name, value }
+                       */]
         };
     }
 
@@ -257,7 +272,8 @@ function createWidget(pan, type, opts) {
             y: -pan.y + innerHeight * 0.5
         },
         type: type,
-        focused: false
+        focused: false,
+        far: false
 
     }, factories[type](opts));
 }
@@ -273,44 +289,123 @@ exports.default = {
 "use strict";
 
 
-Vue.component('note', {
-    template: '#widget-note-template',
-    props: {
-        input: Object,
-        focused: Boolean
-    },
-    computed: {
-        lines: function lines() {
-            return this.input.note.split('\n');
-        }
+var _buttonRemoveVue = __webpack_require__(4);
+
+var _buttonRemoveVue2 = _interopRequireDefault(_buttonRemoveVue);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+Vue.component('button-remove', {
+    template: _buttonRemoveVue2.default,
+    data: function data() {
+        return {
+            Tooltip: Tooltip
+        };
     }
 });
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports) {
+
+module.exports = "<button \r\n    @mouseenter=\"Tooltip.showAtElement($event.target, 'Remove this widget')\"\r\n    @mouseleave=\"Tooltip.hide()\"\r\n    @click=\"Tooltip.hide(); $emit('click')\"\r\n    ><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\r\n</button>"
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Vue.component('dynamic', {
-    template: '#widget-dynamic-template',
+var _noteVue = __webpack_require__(6);
+
+var _noteVue2 = _interopRequireDefault(_noteVue);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+Vue.component('note', {
+    template: _noteVue2.default,
     props: {
         input: Object,
         focused: Boolean
     },
-    computed: {
-        rendered: function rendered() {
-            try {
-                return eval(this.input.script);
-            } catch (error) {
-                return error;
-            }
-        }
-    },
+
     data: function data() {
         return {
-            timer: null
+            Tooltip: Tooltip
+        };
+    },
+
+    computed: {
+        lines: function lines() {
+            return this.input.note.split('\n');
+        }
+    },
+
+    methods: {
+        copyUID: function copyUID() {
+            document.querySelector('#tooltip textarea').select();
+            document.execCommand('copy');
+        }
+    }
+});
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"note\">\r\n\r\n    <div v-if=\"input.focused\" class=\"options\">\r\n        <div>\r\n            <div class=\"group\">\r\n                <button @click=\"input.align = 'left'\"><i class=\"fa fa-align-left\" aria-hidden=\"true\"></i></button>\r\n                <button @click=\"input.align = 'center'\"><i class=\"fa fa-align-center\" aria-hidden=\"true\"></i></button>\r\n                <button @click=\"input.align = 'right'\"><i class=\"fa fa-align-right\" aria-hidden=\"true\"></i></button>\r\n            </div>\r\n\r\n            <input id=\"opt-mono\" type=\"checkbox\" v-model=\"input.monospaced\">\r\n            <label for=\"opt-mono\" class=\"font-monospaced\">Monospaced Font</label>\r\n        </div>\r\n\r\n        <div>\r\n            <button \r\n                class=\"question\"\r\n                @mouseenter=\"Tooltip.showAtElement($event.target, { html: '<p>Click to copy the uid to the clipboard: <textarea>' + input.uid + '</textarea></p>' })\"\r\n                @mouseleave=\"Tooltip.hide()\"\r\n                @click=\"copyUID()\"\r\n                ><i class=\"fa fa-question\" aria-hidden=\"true\"></i></button>\r\n            \r\n            <button-remove @click=\"$emit('removed')\"></button-remove>\r\n        </div>\r\n    </div>\r\n\r\n    <div \r\n        :class=\"[ 'title', { 'font-monospaced': input.monospaced } ]\"\r\n        :style=\"{ textAlign: input.align }\"\r\n        v-if=\"lines.length > 10 && lines[0].trim().length > 0\"\r\n        >{{lines[0]}}</div>\r\n\r\n    <textarea\r\n        :class=\"{ 'font-monospaced': input.monospaced }\"\r\n        :style=\"{ textAlign: input.align }\"\r\n        v-model=\"input.note\"\r\n        :rows=\"lines.length\"\r\n        ></textarea>\r\n</div>"
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _dynamicVue = __webpack_require__(8);
+
+var _dynamicVue2 = _interopRequireDefault(_dynamicVue);
+
+var _explainScript = __webpack_require__(9);
+
+var _explainScript2 = _interopRequireDefault(_explainScript);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function $args(func) {
+    return func.toString().match(/\((.+?)\) =>/)[1].split(',').map(function (it) {
+        return it.trim();
+    });
+}
+
+window.$args = $args;
+
+function $valueify(value) {
+    var n = Number(value);
+    return isNaN(n) ? value : n;
+}
+
+function $ref(uid) {
+    if (app && app.widgets) return app.widgets[uid];
+}
+
+Vue.component('dynamic', {
+    template: _dynamicVue2.default,
+    props: {
+        input: Object,
+        focused: Boolean
+    },
+
+    data: function data() {
+        return {
+            timer: null,
+            isFn: false,
+            result: '',
+
+            Tooltip: Tooltip
         };
     },
 
@@ -318,10 +413,23 @@ Vue.component('dynamic', {
         'input.updateIntervalSeconds': function inputUpdateIntervalSeconds() {
             this.teardownTimer();
             this.setupTimer();
+        },
+        'input.script': function inputScript() {
+            this.teardownTimer();
+            this.updateFnInputs();
+            this.setupTimer();
+        },
+        'input.fnInputs': {
+            handler: function handler() {
+                this.evalScript();
+                this.$emit('updated');
+            },
+            deep: true
         }
     },
 
     mounted: function mounted() {
+        this.updateFnInputs();
         this.setupTimer();
     },
 
@@ -330,23 +438,92 @@ Vue.component('dynamic', {
     },
 
     methods: {
+
         setupTimer: function setupTimer() {
             var _this = this;
 
-            this.timer = setInterval(function () {
-                var s = _this.input.script;
-                _this.input.script = '';
-                _this.input.script = s;
-            }, this.input.updateIntervalSeconds * 1000);
+            if (this.input.updateIntervalSeconds > 0) {
+                this.timer = setInterval(function () {
+                    _this.evalScript();
+                }, this.input.updateIntervalSeconds * 1000);
+            } else {
+                this.timer = null;
+            }
+
+            this.evalScript();
         },
         teardownTimer: function teardownTimer() {
-            clearInterval(this.timer);
+            if (this.timer) clearInterval(this.timer);
+        },
+
+        updateFnInputs: function updateFnInputs() {
+            var _this2 = this;
+
+            var result = void 0;
+
+            try {
+                result = eval(this.input.script);
+            } catch (e) {
+                result = 'error';
+            }
+
+            if (typeof result === 'function') {
+                var names = $args(result);
+
+                this.isFn = names.length > 0;
+
+                if (this.input.fnInputs.map(function (it) {
+                    return it.name;
+                }) !== names) {
+                    this.input.fnInputs = names.map(function (name, i) {
+                        return {
+                            name: name,
+                            value: _this2.input.fnInputs[i].value || ''
+                        };
+                    });
+                }
+            } else if (result !== 'error') {
+                this.input.fnInputs = [];
+            }
+        },
+
+        evalScript: function evalScript() {
+            try {
+                var evaluatedScript = eval(this.input.script);
+
+                if (this.isFn) {
+                    var args = this.input.fnInputs.map(function (it) {
+                        return $valueify(it.value);
+                    });
+                    this.result = evaluatedScript.apply(undefined, _toConsumableArray(args)).toString();
+                } else {
+                    this.result = evaluatedScript.toString();
+                }
+            } catch (error) {
+                this.result = error.message;
+            }
+        },
+
+        showTooltip: function showTooltip(el) {
+            Tooltip.showAtElement(el, { html: _explainScript2.default });
         }
     }
 });
 
 /***/ }),
-/* 5 */
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"dynamic\">\r\n\r\n    <div v-if=\"input.focused\" class=\"options\">\r\n        <input class=\"interval\" type=\"text\" v-model=\"input.updateIntervalSeconds\" title=\"The update interval in seconds\">\r\n\r\n        <div class=\"group\">\r\n            <input type=\"text\" v-model=\"input.script\" title=\"The script to execute\">\r\n            <button \r\n                class=\"question\"\r\n                @mouseenter=\"showTooltip($event.target)\"\r\n                @mouseleave=\"Tooltip.hide()\"\r\n                ><i class=\"fa fa-question\" aria-hidden=\"true\"></i></button>\r\n        </div>\r\n\r\n        <button-remove @click=\"$emit('removed')\"></button-remove>\r\n    </div>\r\n\r\n    <div class=\"computed\">\r\n        <div class=\"inputs\">\r\n            <input\r\n                type=\"text\"\r\n                v-for=\"fnInput in input.fnInputs\" \r\n                v-model=\"fnInput.value\" \r\n                :placeholder=\"fnInput.name\"\r\n                :title=\"fnInput.name\"\r\n                \r\n                @mouseenter=\"Tooltip.show($event.target, fnInput.name)\"\r\n                @mouseleave=\"Tooltip.hide()\"\r\n                >\r\n        </div>\r\n\r\n        <div class=\"result\">{{result}}</div>\r\n    </div>\r\n\r\n</div>"
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"title\">\r\n    Scripting\r\n</div>\r\n<p>\r\n    If The update interval is different from <code>0</code> this code will be executed based on the given interval. What\r\n    the script procduces as a result is rendered below as text. Formatted content is not yet supported. If the script contains\r\n    an arrow function, for every parameter an input field will be rendered and the result of the arrow function with the\r\n    given input will be rendered.\r\n</p>\r\n<div class=\"title\">\r\n    One line isn't enough!\r\n</div>\r\n<p>\r\n    If you feel that one line is not enough you can use the text present in another note by placeing a reference in the following\r\n    way:\r\n</p>\r\n<pre>\r\n    <code>\r\n        eval($ref('note-db29ef329').note)\r\n    </code>\r\n</pre>"
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -405,7 +582,7 @@ Vue.component('widget', {
 });
 
 /***/ }),
-/* 6 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -426,7 +603,78 @@ Vue.component('tool', {
 });
 
 /***/ }),
-/* 7 */
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var SOME_MARGIN = 4;
+var positionRectMapper = {
+    'bottom-center': function bottomCenter(rect) {
+        return {
+            x: rect.left + rect.width * 0.5,
+            y: rect.top + rect.height + SOME_MARGIN
+        };
+    },
+    'center-left': function centerLeft(rect) {
+        return {
+            x: rect.left - SOME_MARGIN,
+            y: rect.top + rect.height * 0.5
+        };
+    }
+};
+
+var Tooltip = new Vue({
+    el: '#tooltip',
+
+    data: {
+        isShown: false,
+        x: 400, y: 400,
+
+        message: 'Tooltip di prova',
+        position: 'bottom-center'
+    },
+
+    methods: {
+
+        showAtPosition: function showAtPosition(x, y, message) {
+            var position = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'bottom-center';
+
+            this.isShown = true;
+            this.message = message;
+            this.x = x;
+            this.y = y;
+        },
+        showAtElement: function showAtElement(element, message) {
+            var position = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'bottom-center';
+
+            var bounds = element.getBoundingClientRect();
+
+            var _positionRectMapper$p = positionRectMapper[position](bounds),
+                x = _positionRectMapper$p.x,
+                y = _positionRectMapper$p.y;
+
+            this.showAtPosition(x, y, message, position);
+        },
+
+        show: function show(element, message) {
+            var position = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'bottom-center';
+
+            this.showAtElement(element, message, position);
+        },
+
+        hide: function hide() {
+            this.isShown = false;
+        }
+
+    }
+});
+
+window.Tooltip = Tooltip;
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

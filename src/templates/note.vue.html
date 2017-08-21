@@ -1,0 +1,39 @@
+<div class="note">
+
+    <div v-if="input.focused" class="options">
+        <div>
+            <div class="group">
+                <button @click="input.align = 'left'"><i class="fa fa-align-left" aria-hidden="true"></i></button>
+                <button @click="input.align = 'center'"><i class="fa fa-align-center" aria-hidden="true"></i></button>
+                <button @click="input.align = 'right'"><i class="fa fa-align-right" aria-hidden="true"></i></button>
+            </div>
+
+            <input id="opt-mono" type="checkbox" v-model="input.monospaced">
+            <label for="opt-mono" class="font-monospaced">Monospaced Font</label>
+        </div>
+
+        <div>
+            <button 
+                class="question"
+                @mouseenter="Tooltip.showAtElement($event.target, { html: '<p>Click to copy the uid to the clipboard: <textarea>' + input.uid + '</textarea></p>' })"
+                @mouseleave="Tooltip.hide()"
+                @click="copyUID()"
+                ><i class="fa fa-question" aria-hidden="true"></i></button>
+            
+            <button-remove @click="$emit('removed')"></button-remove>
+        </div>
+    </div>
+
+    <div 
+        :class="[ 'title', { 'font-monospaced': input.monospaced } ]"
+        :style="{ textAlign: input.align }"
+        v-if="lines.length > 10 && lines[0].trim().length > 0"
+        >{{lines[0]}}</div>
+
+    <textarea
+        :class="{ 'font-monospaced': input.monospaced }"
+        :style="{ textAlign: input.align }"
+        v-model="input.note"
+        :rows="lines.length"
+        ></textarea>
+</div>

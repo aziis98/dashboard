@@ -1,0 +1,6 @@
+<button 
+    @mouseenter="Tooltip.showAtElement($event.target, 'Remove this widget')"
+    @mouseleave="Tooltip.hide()"
+    @click="Tooltip.hide(); $emit('click')"
+    ><i class="fa fa-trash" aria-hidden="true"></i>
+</button>

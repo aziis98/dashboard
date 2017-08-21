@@ -42,7 +42,7 @@ body
         display: flex
         flex-direction: row
         position: absolute
-        top: 51px
+        top: 50px
         left: -1px
 
         background-color: darken($main-color, 2%)
@@ -109,53 +109,12 @@ body
         // background-color: transparentize(mix($main-color, #fff, 95%), 0.75)
         padding: 20px
 
-        user-select: none
+        // user-select: none
 
-        .dynamic
-            width: 60vw
-            max-width: 450px
+        // Widgets
+        @import './sass/note'
+        @import './sass/dynamic'
 
-            .options
-                .interval
-                    width: 50px
-                .group
-                    flex-grow: 1
-                    input[type=text]
-                        width: 100%
-                        font-size: 14px
-                        font-family: 'PT Mono', monospace !important
-
-            .computed
-                text-align: center
-
-        .note
-
-            width: 60vw
-            max-width: 450px
-
-            .title
-                font-size: 18px
-                font-weight: normal
-
-            textarea
-                margin: 0 5px
-                width: 100%
-
-                background-color: transparent
-                color: $text-color
-
-                font-size: 16px
-                font-family: $font-family, sans-serif
-                font-weight: lighter
-
-                resize: none
-                outline: none
-                border: none
-
-                max-height: 450px
-                word-wrap: break-word
-                overflow-x: hidden
-                overflow-y: auto
     
     .logo
         font-size: 20px
@@ -177,6 +136,8 @@ body
     align-items: center
     justify-content: space-between
 
+    div
+        display: flex
     & > *
         margin: 0 5px
 
@@ -188,6 +149,8 @@ body
     align-items: center
 
     button, input[type=text]
+        margin: 0
+
         &:first-child
             border-top-right-radius: 0
             border-bottom-right-radius: 0
@@ -203,22 +166,36 @@ body
         &:hover
             color: $tint-color
 
-button, input[type=text]
+button, input[type=text], input[type=checkbox] + label
     height: 25px
     outline: none
     border: none
+
+    margin: 0 5px
 
     background-color: darken($main-color, 2%)
     border: 1px solid darken($main-color, 4%)
     color: $text-color
 
-    border-radius: 2px
+    border-radius: 3px
 
 input[type=text]
     padding: 0 6px
-    
     font-size: 15px
     font-family: $font-family, sans-serif 
+
+input[type=checkbox]
+    display: none
+    & + label
+        display: flex
+        align-items: center
+        justify-content: center
+        font-size: 14px
+        padding: 0 5px
+    &:checked + label
+        background-color: darken($main-color, 6%)
+        border: 1px solid darken($main-color, 8%)
+        color: $tint-color
 
 button
     text-align: center
@@ -229,3 +206,20 @@ button
 
 *
     box-sizing: border-box
+
+.font-monospaced
+    font-family: 'PT Mono', monospace !important
+
+@import './sass/tooltip'
+
+textarea.readonly
+    width: 100%
+    height: 20px
+    outline: none
+    border: none
+    background-color: lighten($main-color, 4%)
+    border-radius: 3px
+    color: $text-color
+    resize: none
+    padding: 2px 5px
+    text-align: center

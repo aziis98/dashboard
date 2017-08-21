@@ -1,0 +1,21 @@
+<div class="title">
+    Scripting
+</div>
+<p>
+    If The update interval is different from <code>0</code> this code will be executed based on the given interval. What
+    the script procduces as a result is rendered below as text. Formatted content is not yet supported. If the script contains
+    an arrow function, for every parameter an input field will be rendered and the result of the arrow function with the
+    given input will be rendered.
+</p>
+<div class="title">
+    One line isn't enough!
+</div>
+<p>
+    If you feel that one line is not enough you can use the text present in another note by placeing a reference in the following
+    way:
+</p>
+<pre>
+    <code>
+        eval($ref('note-db29ef329').note)
+    </code>
+</pre>

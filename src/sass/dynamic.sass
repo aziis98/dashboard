@@ -1,0 +1,46 @@
+
+.dynamic
+    width: 60vw
+    max-width: 450px
+
+    .options
+        .interval
+            width: 50px
+        .group
+            flex-grow: 1
+            input[type=text]
+                width: 100%
+                font-size: 14px
+                font-family: 'PT Mono', monospace !important
+
+    .computed
+        text-align: center
+
+        .inputs
+            display: flex
+            flex-direction: column
+            align-items: center
+            input[type=text], button
+                width: 100%
+
+                &:first-child
+                    border-bottom: none
+
+                    border-top-left-radius: 3px !important
+                    border-top-right-radius: 3px !important
+                    
+                    border-bottom-left-radius: 0
+                    border-bottom-right-radius: 0
+                &:not(:first-child):not(:last-child)
+                    border-radius: 0
+                    border-bottom: none
+                &:last-child
+                    border-top-left-radius: 0
+                    border-top-right-radius: 0
+
+                    border-bottom-left-radius: 3px !important
+                    border-bottom-right-radius: 3px !important
+
+        .result
+            font-size: 30px
+            margin: 15px
