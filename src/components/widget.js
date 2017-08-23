@@ -24,6 +24,10 @@ Vue.component('widget', {
         };
     },
 
+    created: function () {
+        // this.input.aProp = this.input.aProp || aValue
+    },
+
     updated: function () {
         this.$emit('updated');
     },

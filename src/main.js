@@ -3,7 +3,8 @@
 // Copyright 2017 Antonio De Lucreziis
 
 import ww from './util/widgets';
- 
+import startingJSONConfiguration from './util/initial-state.json';
+
 import { ButtonRemove } from './components/button-remove'
 
 import { Note } from './components/widget-types/note'
@@ -21,16 +22,20 @@ const app = new Vue({
         widgets: {},
 
         pan: { x: innerWidth * 0.5, y: innerHeight * 0.5 },
-
-        lastMouseEvent: null,
-        mouse: { dx: 0, dy: 0 },
         panning: false,
+
+        mouse: { dx: 0, dy: 0 },
+
+        // Optimizations
+        lastMouseEvent: null,
+        // spatialHash: { }
 
     },
 
     created: function () {
         if (!localStorage.getItem('dashboard')) {
             localStorage.setItem('dashboard', 'true');
+            this.load(startingJSONConfiguration);
         }
         else {
             this.load();
@@ -74,8 +79,8 @@ const app = new Vue({
             }
         },
 
-        load: function () {
-            const { widgets, pan } = JSON.parse(localStorage.getItem('dashboard-store'));
+        load: function (actualJSON) {
+            const { widgets, pan } = JSON.parse(actualJSON || localStorage.getItem('dashboard-store'));
 
             this.widgets = widgets;
             this.pan = pan;

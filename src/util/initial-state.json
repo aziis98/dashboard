@@ -1,0 +1,128 @@
+{
+    "widgets": {
+        "widget-9fe90d6d91": {
+            "uid": "widget-9fe90d6d91",
+            "location": {
+                "x": 246,
+                "y": -749
+            },
+            "type": "dynamic",
+            "script": "moment().format('DD MMMM Y')",
+            "updateIntervalSeconds": "1",
+            "focused": false,
+            "fnInputs": []
+        },
+        "widget-79e179b39f": {
+            "uid": "widget-79e179b39f",
+            "location": {
+                "x": 748,
+                "y": -748
+            },
+            "type": "note",
+            "focused": false,
+            "note": "Dashboard | Introduction\n\nI'm aziis98 (Antonio De Lucreziis) and this is a dashboard for keeping notes, timers and more things like those.\n\nHere you can see two notes and a clock. Widgets can be added from the menu above. You can move widgets by dragging them around. Try to move some widgets. As you see there is a very fine grid to keep things a bit tidier.\n\nWhen a note becomes long (about over 10 lines) the first line will be used as a title like this one.\n\nNotes can be very long so at a certain point they stop growing vertically and instead a scrollbar appears.\n\nOh, and by the way, everything is saved to localStorage so if you change something it will remain even if you reload the page.\n\nYou can also pan around indefinitely.\n\nEnd of this note\n\n\n\n\n",
+            "align": "left"
+        },
+        "widget-69de7e8642": {
+            "uid": "widget-69de7e8642",
+            "location": {
+                "x": 247,
+                "y": -623
+            },
+            "type": "dynamic",
+            "focused": false,
+            "script": "moment().format('HH:mm:ss')",
+            "updateIntervalSeconds": "1",
+            "fnInputs": []
+        },
+        "widget-be6c836beb": {
+            "uid": "widget-be6c836beb",
+            "location": {
+                "x": 246,
+                "y": -497
+            },
+            "type": "dynamic",
+            "focused": false,
+            "script": "'You have ' + moment('01/01/2018', 'DD/MM/YYYY').diff(moment(), 'days') + ' more days till the end of the year'",
+            "updateIntervalSeconds": "60",
+            "fnInputs": []
+        },
+        "widget-ca80544d31": {
+            "uid": "widget-ca80544d31",
+            "location": {
+                "x": 1248,
+                "y": -748
+            },
+            "type": "dynamic",
+            "focused": false,
+            "script": "(a, b) => 'a + b = ' + (a + b)",
+            "updateIntervalSeconds": 0.1,
+            "fnInputs": [
+                {
+                    "name": "a",
+                    "value": ""
+                },
+                {
+                    "name": "b",
+                    "value": "5"
+                }
+            ]
+        },
+        "widget-164f3e9e42": {
+            "uid": "widget-164f3e9e42",
+            "location": {
+                "x": 1245.5,
+                "y": -572
+            },
+            "type": "dynamic",
+            "focused": false,
+            "script": "let fac = (n) => n < 1 ? 1 : (n * fac(n - 1)) ; (n) => n + '! = ' + fac(n || 0)",
+            "updateIntervalSeconds": "0",
+            "fnInputs": [
+                {
+                    "name": "n",
+                    "value": "10"
+                }
+            ]
+        },
+        "widget-f3c5be2606": {
+            "uid": "widget-f3c5be2606",
+            "location": {
+                "x": 249.5,
+                "y": -334
+            },
+            "type": "note",
+            "focused": false,
+            "note": "Dashboard | Javascript Dynamic Widgets\n\nA Dynamic Widget can be created from the 'New Widget' menu on the toolbar.\n\nYou can edit the script of a Dynamic by double-clicking it, it will show a menu with some options. All widget when double-clicked show a trash that deletes the widget and a question mark for more info on the widget.\n\nInside a Dynamic there are two inputs, the first is for setting how often it will update in seconds (if you set it to 0 it won't update at all!) while the second is for the script itself. Also hover on the question mark for a quick reference of the aviable commands.\n\nIf you set the script to be an arrow function instead of evaluating immediately, you will get a list of parameters as inputs (see on the top-right the sum and the factorial examples) that will be passed as inputs to the arrow function when they change.\n\nFor simplifying things if a valid number is passed to the arrow function it is automatically converted to a Number to avoid conversion within the function itself.\n\n\n\n\n\n",
+            "align": "left"
+        },
+        "widget-fa47895918": {
+            "uid": "widget-fa47895918",
+            "location": {
+                "x": 1245,
+                "y": -369
+            },
+            "type": "note",
+            "focused": false,
+            "note": "// This has been linked with the $ref\n// method, look below to see how that works\n\n// last expression returns\nMath\n.floor(Math.random() * Math.pow(36, 10))\n.toString(36)\n\n",
+            "align": "left",
+            "monospaced": true
+        },
+        "widget-5b58d1f3dc": {
+            "uid": "widget-5b58d1f3dc",
+            "location": {
+                "x": 1248,
+                "y": -148
+            },
+            "type": "dynamic",
+            "focused": false,
+            "script": "eval($ref('widget-fa47895918').note)",
+            "updateIntervalSeconds": "10",
+            "fnInputs": []
+        }
+    },
+    "pan": {
+        "x": -237.5,
+        "y": 807
+    }
+}

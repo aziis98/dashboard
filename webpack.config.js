@@ -9,6 +9,13 @@ const files = glob.sync('./src/*.@(js|sass)');
 console.log('Entry files detected: %s', files.map(f => '\n - ' + f).join(''));
 
 const config = {
+
+    devServer: {
+        contentBase: __dirname,
+        publicPath: '/dist/',
+        port: 8080,
+    },
+
     entry: files,
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -17,11 +24,7 @@ const config = {
     module: {
         rules: [
             {
-                test: /\.txt$/,
-                use: 'raw-loader'
-            },
-            {
-                test: /\.html$/,
+                test: /\.(txt|html|json)$/,
                 use: 'raw-loader'
             },
             {
@@ -44,7 +47,7 @@ const config = {
         ]
     },
     plugins: [
-        // new webpack.optimize.UglifyJsPlugin(),
+        new webpack.optimize.UglifyJsPlugin(),
         new ExtractTextPlugin('styles.css'),
         new CleanPlugin(['dist']),
     ]

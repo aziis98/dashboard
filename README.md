@@ -14,3 +14,4 @@
 # TODO
 
 * [ ] Copiable text in dynamics
+* [ ] Add Buttons to dynamics

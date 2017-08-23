@@ -22,7 +22,6 @@
                 v-for="fnInput in input.fnInputs" 
                 v-model="fnInput.value" 
                 :placeholder="fnInput.name"
-                :title="fnInput.name"
                 
                 @mouseenter="Tooltip.show($event.target, fnInput.name)"
                 @mouseleave="Tooltip.hide()"

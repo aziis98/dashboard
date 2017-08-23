@@ -103,7 +103,8 @@ body {
         max-height: 450px;
         word-wrap: break-word;
         overflow-x: hidden;
-        overflow-y: auto; }
+        overflow-y: auto;
+        padding-right: 10px; }
     #app .widget .dynamic {
       width: 60vw;
       max-width: 450px; }
@@ -261,14 +262,14 @@ button {
     font-size: 14px;
     text-align: left; }
     #tooltip .message .title {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: bold; }
     #tooltip .message p {
-      margin: 5px 2px; }
+      margin: 5px; }
     #tooltip .message pre, #tooltip .message code {
       font-family: 'PT Mono', monospace; }
     #tooltip .message textarea {
-      width: 100%;
+      display: block;
       height: 20px;
       outline: none;
       border: none;
@@ -277,7 +278,8 @@ button {
       color: #DDD;
       resize: none;
       padding: 2px 5px;
-      text-align: center; }
+      text-align: center;
+      margin: 5px auto; }
 
 textarea.readonly {
   width: 100%;

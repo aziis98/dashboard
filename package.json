@@ -5,7 +5,7 @@
   "author": "aziis98 <antonio.delucreziis@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack --watch"
+    "dev": "webpack-dev-server"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
